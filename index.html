@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FRAUD/BAN - AI Fraud Detection for Banks</title>
+    <style>
+        /* Apple-inspired dark theme */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background: #0A0F1E;
+            color: #fff;
+            line-height: 1.6;
+        }
+
+        /* Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            background: rgba(10, 15, 30, 0.95);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #FF416C, #FF4B2B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo span {
+            background: none;
+            -webkit-text-fill-color: #fff;
+            background: linear-gradient(135deg, #FF416C, #FF4B2B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            opacity: 1;
+        }
+
+        .demo-btn {
+            background: linear-gradient(135deg, #FF416C, #FF4B2B);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .demo-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 65, 108, 0.3);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 10rem 5% 5rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            min-height: 90vh;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, #fff, #BBDEFB);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero .highlight {
+            background: linear-gradient(135deg, #FF416C, #FF4B2B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #B0BEC5;
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .cta-primary {
+            background: linear-gradient(135deg, #FF416C, #FF4B2B);
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .cta-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 65, 108, 0.3);
+        }
+
+        .cta-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255,255,255,0.2);
+            padding: 1rem 2.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .cta-secondary:hover {
+            border-color: #FF416C;
+        }
+
+        /* Hero Image */
+        .hero-image {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.03);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #FF416C;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #B0BEC5;
+            font-size: 0.9rem;
+        }
+
+        .alert-demo {
+            background: rgba(255, 65, 108, 0.1);
+            border-left: 4px solid #FF416C;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            padding: 3rem 5%;
+            background: rgba(255,255,255,0.02);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #FF416C;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-desc {
+            color: #B0BEC5;
+            font-size: 1rem;
+        }
+
+        /* Features */
+        .features {
+            padding: 5rem 5%;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: #B0BEC5;
+            font-size: 1.2rem;
+            margin-bottom: 4rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: rgba(255,255,255,0.03);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255,255,255,0.05);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+
+        .feature-card p {
+            color: #B0BEC5;
+            line-height: 1.6;
+        }
+
+        /* How it Works */
+        .how-it-works {
+            padding: 5rem 5%;
+            background: rgba(255,255,255,0.02);
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .step {
+            text-align: center;
+            position: relative;
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #FF416C, #FF4B2B);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0 auto 1.5rem;
+        }
+
+        .step h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+
+        .step p {
+            color: #B0BEC5;
+        }
+
+        /* Live Demo Section */
+        .demo-section {
+            padding: 5rem 5%;
+        }
+
+        .demo-container {
+            background: rgba(255,255,255,0.03);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255,255,255,0.05);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .demo-container h3 {
+            margin-bottom: 1.5rem;
+            color: #FF416C;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #B0BEC5;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #FF416C;
+        }
+
+        .test-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #FF416C, #FF4B2B);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 1rem;
+        }
+
+        .result-box {
+            background: rgba(0,0,0,0.3);
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .safe {
+            color: #4CAF50;
+        }
+
+        .fraud {
+            color: #FF416C;
+        }
+
+        /* Pricing */
+        .pricing {
+            padding: 5rem 5%;
+            background: rgba(255,255,255,0.02);
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .pricing-card {
+            background: rgba(255,255,255,0.03);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+        }
+
+        .pricing-card.featured {
+            border: 2px solid #FF416C;
+            transform: scale(1.05);
+        }
+
+        .pricing-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #FF416C;
+            margin-bottom: 1rem;
+        }
+
+        .price span {
+            font-size: 1rem;
+            color: #B0BEC5;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin: 2rem 0;
+        }
+
+        .pricing-features li {
+            margin: 1rem 0;
+            color: #B0BEC5;
+        }
+
+        .pricing-btn {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255,255,255,0.2);
+            padding: 1rem;
+            width: 100%;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .pricing-card.featured .pricing-btn {
+            background: linear-gradient(135deg, #FF416C, #FF4B2B);
+            border: none;
+        }
+
+        .pricing-btn:hover {
+            border-color: #FF416C;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 5rem 5%;
+            text-align: center;
+            background: linear-gradient(135deg, #FF416C, #FF4B2B);
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .cta-section .demo-btn {
+            background: white;
+            color: #FF416C;
+            font-size: 1.1rem;
+            padding: 1rem 3rem;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 3rem 5%;
+            background: #0A0F1E;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+        }
+
+        .footer p {
+            color: #B0BEC5;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">🚫 FRAUD/<span>BAN</span></div>
+        <div class="nav-links">
+            <a href="#">Home</a>
+            <a href="#">Features</a>
+            <a href="#">Pricing</a>
+            <a href="#">API</a>
+            <a href="#">Docs</a>
+        </div>
+        <button class="demo-btn">Live Demo</button>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Stop fraud before it happens with <span class="highlight">AI-powered detection</span></h1>
+            <p>FRAUD/BAN analyzes millions of transactions in real-time, blocking fraudulent activity with 99.9% accuracy while keeping your legitimate customers happy.</p>
+            <div class="cta-buttons">
+                <button class="cta-primary">Start Free Trial</button>
+                <button class="cta-secondary">Watch Demo</button>
+            </div>
+        </div>
+        <div class="hero-image">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">$40B+</div>
+                    <div class="stat-label">Annual fraud losses</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">99.9%</div>
+                    <div class="stat-label">Detection accuracy</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">0.01%</div>
+                    <div class="stat-label">False positive rate</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">50ms</div>
+                    <div class="stat-label">Real-time detection</div>
+                </div>
+            </div>
+            <div class="alert-demo">
+                ⚠️ FRAUD ALERT: Suspicious transaction detected • Amount: $4,299 • Location: NYC • Time: 2ms ago
+            </div>
+            <div style="margin-top: 1rem; color: #4CAF50;">
+                ✅ Safe transaction: $34.50 at Starbucks • Cleared
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Bar -->
+    <section class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-number">284K+</div>
+            <div class="stat-desc">Transactions analyzed</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">492</div>
+            <div class="stat-desc">Fraud cases detected</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">$42M</div>
+            <div class="stat-desc">Fraud prevented</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">50+</div>
+            <div class="stat-desc">Banking partners</div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features">
+        <h2 class="section-title">Why banks choose FRAUD/BAN</h2>
+        <p class="section-subtitle">Advanced AI that learns and adapts to new fraud patterns</p>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Real-time Detection</h3>
+                <p>Analyze transactions in under 50ms - fast enough to block fraud before it completes.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>99.9% Accuracy</h3>
+                <p>Our AI model detects 99.9% of fraud with only 0.01% false positives.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🧠</div>
+                <h3>Self-learning AI</h3>
+                <p>Continuously learns from new transactions to catch emerging fraud patterns.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔍</div>
+                <h3>Explainable Results</h3>
+                <p>Each alert comes with clear reasons why it was flagged - helps investigators.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🌐</div>
+                <h3>Global Coverage</h3>
+                <p>Works with transactions from 200+ countries and 50+ currencies.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔌</div>
+                <h3>Simple API</h3>
+                <p>Integrate with your existing systems in hours, not months.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it Works -->
+    <section class="how-it-works">
+        <h2 class="section-title">How FRAUD/BAN works</h2>
+        <p class="section-subtitle">Three simple steps to protect your business</p>
+        
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <h3>Connect your data</h3>
+                <p>API integration with your payment system - takes less than a day</p>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <h3>AI analyzes patterns</h3>
+                <p>Our model learns normal behavior vs fraudulent patterns</p>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <h3>Get real-time alerts</h3>
+                <p>Fraud attempts are blocked instantly with detailed explanations</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Demo Section -->
+    <section class="demo-section">
+        <h2 class="section-title">Test FRAUD/BAN live</h2>
+        <p class="section-subtitle">Try it yourself - enter transaction details</p>
+        
+        <div class="demo-container">
+            <h3>🔍 Transaction Scanner</h3>
+            <div class="input-group">
+                <label>Amount ($)</label>
+                <input type="number" id="amount" placeholder="e.g., 299.99" value="299.99">
+            </div>
+            <div class="input-group">
+                <label>Location</label>
+                <input type="text" id="location" placeholder="e.g., New York" value="New York">
+            </div>
+            <div class="input-group">
+                <label>Time of day</label>
+                <input type="text" id="time" placeholder="e.g., 14:30" value="14:30">
+            </div>
+            <button class="test-btn" onclick="checkFraud()">Check Transaction</button>
+            <div class="result-box" id="result">
+                Click "Check Transaction" to test
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="pricing">
+        <h2 class="section-title">Simple, transparent pricing</h2>
+        <p class="section-subtitle">Choose the plan that fits your transaction volume</p>
+        
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <h3>Startup</h3>
+                <div class="price">$499<span>/month</span></div>
+                <ul class="pricing-features">
+                    <li>✓ 10,000 transactions/month</li>
+                    <li>✓ Email support</li>
+                    <li>✓ Basic dashboard</li>
+                    <li>✓ API access</li>
+                </ul>
+                <button class="pricing-btn">Get Started</button>
+            </div>
+            <div class="pricing-card featured">
+                <h3>Business</h3>
+                <div class="price">$1,999<span>/month</span></div>
+                <ul class="pricing-features">
+                    <li>✓ 100,000 transactions/month</li>
+                    <li>✓ 24/7 phone support</li>
+                    <li>✓ Advanced analytics</li>
+                    <li>✓ Custom rules</li>
+                    <li>✓ Team accounts</li>
+                </ul>
+                <button class="pricing-btn">Most Popular</button>
+            </div>
+            <div class="pricing-card">
+                <h3>Enterprise</h3>
+                <div class="price">Custom</div>
+                <ul class="pricing-features">
+                    <li>✓ Unlimited transactions</li>
+                    <li>✓ Dedicated support team</li>
+                    <li>✓ On-premise deployment</li>
+                    <li>✓ Custom AI training</li>
+                    <li>✓ SLA guarantee</li>
+                </ul>
+                <button class="pricing-btn">Contact Sales</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <h2>Ready to stop fraud?</h2>
+        <p>Join 50+ banks already using FRAUD/BAN to protect their customers</p>
+        <button class="demo-btn">Start Your Free Trial</button>
+        <p style="margin-top: 1rem; font-size: 0.9rem;">No credit card required • 14-day free trial</p>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="logo">🚫 FRAUD/BAN</div>
+        <p>© 2024 FRAUD/BAN. All rights reserved.</p>
+        <p style="font-size: 0.8rem;">Protecting banks and their customers with AI</p>
+    </footer>
+
+    <script>
+        function checkFraud() {
+            const amount = parseFloat(document.getElementById('amount').value);
+            const location = document.getElementById('location').value;
+            const time = document.getElementById('time').value;
+            const resultDiv = document.getElementById('result');
+            
+            // Simple fraud detection logic for demo
+            let isFraud = false;
+            let reason = "";
+            
+            // Rule 1: Very large amounts
+            if (amount > 5000) {
+                isFraud = true;
+                reason = "Amount exceeds normal threshold";
+            }
+            // Rule 2: Suspicious locations (demo)
+            else if (location.toLowerCase().includes('nigeria') || location.toLowerCase().includes('high risk')) {
+                isFraud = true;
+                reason = "Location flagged as high-risk";
+            }
+            // Rule 3: Unusual time (3-5 AM)
+            else if (time >= "03:00" && time <= "05:00") {
+                isFraud = true;
+                reason = "Unusual transaction time";
+            }
+            // Rule 4: Random demo probability (30% chance for demo purposes)
+            else if (Math.random() < 0.3) {
+                isFraud = true;
+                reason = "Unusual spending pattern detected";
+            }
+            
+            if (isFraud) {
+                resultDiv.innerHTML = `🚫 FRAUD DETECTED!<br>Reason: ${reason}<br>Transaction blocked.`;
+                resultDiv.className = "result-box fraud";
+            } else {
+                resultDiv.innerHTML = "✅ Transaction appears legitimate.<br>Cleared for processing.";
+                resultDiv.className = "result-box safe";
+            }
+        }
+    </script>
+</body>
+</html>
